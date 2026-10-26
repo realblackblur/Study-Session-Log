@@ -1,7 +1,9 @@
+import StudyTracker from "./components/StudyTracker";
+
 function App() {
   return (
     <>
-      <h1>Heading</h1>
+      <StudyTracker />
     </>
   );
 }

@@ -12,9 +12,17 @@ function formatTime(totalSeconds: number): string {
   return `${hoursStr}:${minutesStr}:${secondsStr}`;
 }
 
+interface Session {
+  id: number;
+  subject: string;
+  time: number;
+}
+
 function StudyTracker() {
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [text, setText] = useState<string>("");
+  const [lists, setLists] = useState<Session[]>([]);
 
   useEffect(() => {
     if (!isRunning) {
@@ -30,9 +38,23 @@ function StudyTracker() {
     };
   }, [isRunning]);
 
-  function reset() {
+  function handleReset() {
     setElapsedSeconds(0);
     setIsRunning(false);
+  }
+
+  function handleSave() {
+    const newSession: Session = {
+      id: Date.now(),
+      subject: text,
+      time: elapsedSeconds,
+    };
+
+    setLists((prev) => [...prev, newSession]);
+
+    setElapsedSeconds(0);
+    setIsRunning(false);
+    setText("");
   }
 
   return (
@@ -41,7 +63,26 @@ function StudyTracker() {
       <button onClick={() => setIsRunning((prev) => !prev)}>
         {isRunning ? "Pause" : "Start"}
       </button>
-      <button onClick={reset}>Reset</button>
+      <button onClick={handleReset}>Reset</button>
+      <div>
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Subject Name"
+        />
+        <button onClick={handleSave}>Save</button>
+      </div>
+      <div>
+        <h3>Saved Sessions</h3>
+        <ul>
+          {lists.map((session) => (
+            <li key={session.id}>
+              {session.subject} - {formatTime(session.time)}
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
 }

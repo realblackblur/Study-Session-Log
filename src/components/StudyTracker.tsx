@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function formatTime(totalSeconds: number): string {
   const hours: number = Math.floor(totalSeconds / 3600);
@@ -13,11 +13,35 @@ function formatTime(totalSeconds: number): string {
 }
 
 function StudyTracker() {
-  const [elapsedSeconds, setElapsedSeconds] = useState<number>(3725);
+  const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isRunning) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isRunning]);
+
+  function reset() {
+    setElapsedSeconds(0);
+    setIsRunning(false);
+  }
 
   return (
     <>
       <h1>{formatTime(elapsedSeconds)}</h1>
+      <button onClick={() => setIsRunning((prev) => !prev)}>
+        {isRunning ? "Pause" : "Start"}
+      </button>
+      <button onClick={reset}>Reset</button>
     </>
   );
 }

@@ -15,14 +15,15 @@ function formatTime(totalSeconds: number): string {
 interface Session {
   id: number;
   subject: string;
-  time: number;
+  durationSeconds: number;
 }
 
 function StudyTracker() {
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [text, setText] = useState<string>("");
-  const [lists, setLists] = useState<Session[]>([]);
+  const [subjectName, setSubjectName] = useState<string>("");
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     if (!isRunning) {
@@ -41,20 +42,35 @@ function StudyTracker() {
   function handleReset() {
     setElapsedSeconds(0);
     setIsRunning(false);
+    setErrorMessage("");
   }
 
   function handleSave() {
+    setErrorMessage("");
+    setIsRunning(false);
+
+    if (subjectName.trim() === "" && elapsedSeconds === 0) {
+      setErrorMessage("Enter a subject name & Start the timer before saving");
+      return;
+    }
+    if (subjectName.trim() === "") {
+      setErrorMessage("Enter a subject name");
+      return;
+    }
+    if (elapsedSeconds === 0) {
+      setErrorMessage("Start the timer before saving");
+      return;
+    }
     const newSession: Session = {
       id: Date.now(),
-      subject: text,
-      time: elapsedSeconds,
+      subject: subjectName.trim(),
+      durationSeconds: elapsedSeconds,
     };
 
-    setLists((prev) => [...prev, newSession]);
+    setSessions((prev) => [...prev, newSession]);
 
     setElapsedSeconds(0);
-    setIsRunning(false);
-    setText("");
+    setSubjectName("");
   }
 
   return (
@@ -64,21 +80,23 @@ function StudyTracker() {
         {isRunning ? "Pause" : "Start"}
       </button>
       <button onClick={handleReset}>Reset</button>
+
       <div>
         <input
           type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          value={subjectName}
+          onChange={(e) => setSubjectName(e.target.value)}
           placeholder="Subject Name"
         />
         <button onClick={handleSave}>Save</button>
       </div>
+      {errorMessage !== "" && <p>{errorMessage}</p>}
       <div>
         <h3>Saved Sessions</h3>
         <ul>
-          {lists.map((session) => (
+          {sessions.map((session) => (
             <li key={session.id}>
-              {session.subject} - {formatTime(session.time)}
+              {session.subject} - {formatTime(session.durationSeconds)}
             </li>
           ))}
         </ul>

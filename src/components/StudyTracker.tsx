@@ -93,6 +93,7 @@ function StudyTracker() {
       {errorMessage !== "" && <p>{errorMessage}</p>}
       <div>
         <h3>Saved Sessions</h3>
+        {sessions.length === 0 && <p>No sessions yet!</p>}
         <ul>
           {sessions.map((session) => (
             <li key={session.id}>

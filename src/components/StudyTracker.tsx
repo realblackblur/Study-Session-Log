@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import formatTime from "../utils/formatTime";
+import Timer from "./Timer";
 
 interface Session {
   id: number;
@@ -64,7 +65,7 @@ function StudyTracker() {
 
   return (
     <>
-      <h1>{formatTime(elapsedSeconds)}</h1>
+      <Timer elapsedSeconds={elapsedSeconds} />
       <button onClick={() => setIsRunning((prev) => !prev)}>
         {isRunning ? "Pause" : "Start"}
       </button>

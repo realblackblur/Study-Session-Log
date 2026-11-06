@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
+import type { Session } from "../types";
 import formatTime from "../utils/formatTime";
 import Timer from "./Timer";
-
-interface Session {
-  id: number;
-  subject: string;
-  durationSeconds: number;
-}
 
 function StudyTracker() {
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);

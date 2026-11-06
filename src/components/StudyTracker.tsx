@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Session } from "../types";
-import formatTime from "../utils/formatTime";
+import SessionList from "./SessionList";
 import Timer from "./Timer";
 
 function StudyTracker() {
@@ -76,17 +76,7 @@ function StudyTracker() {
         <button onClick={handleSave}>Save</button>
       </div>
       {errorMessage !== "" && <p>{errorMessage}</p>}
-      <div>
-        <h3>Saved Sessions</h3>
-        {sessions.length === 0 && <p>No sessions yet!</p>}
-        <ul>
-          {sessions.map((session) => (
-            <li key={session.id}>
-              {session.subject} - {formatTime(session.durationSeconds)}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <SessionList sessions={sessions} />
     </>
   );
 }

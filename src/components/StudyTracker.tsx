@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Session } from "../types";
 import SessionList from "./SessionList";
 import Timer from "./Timer";
+import TimerControl from "./TimerControls";
 
 function StudyTracker() {
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
@@ -61,10 +62,12 @@ function StudyTracker() {
   return (
     <>
       <Timer elapsedSeconds={elapsedSeconds} />
-      <button onClick={() => setIsRunning((prev) => !prev)}>
-        {isRunning ? "Pause" : "Start"}
-      </button>
-      <button onClick={handleReset}>Reset</button>
+      
+      <TimerControl
+        isRunning={isRunning}
+        onToggle={() => setIsRunning((prev) => !prev)}
+        onReset={handleReset}
+      />
 
       <div>
         <input

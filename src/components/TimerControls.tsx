@@ -4,7 +4,7 @@ interface TimerControlsProps {
   onReset: () => void;
 }
 
-function TimerControl({ isRunning, onToggle, onReset }: TimerControlsProps) {
+function TimerControls({ isRunning, onToggle, onReset }: TimerControlsProps) {
   return (
     <>
       <button onClick={onToggle}>{isRunning ? "Pause" : "Start"}</button>
@@ -13,5 +13,5 @@ function TimerControl({ isRunning, onToggle, onReset }: TimerControlsProps) {
   );
 }
 
-export default TimerControl;
+export default TimerControls;
 

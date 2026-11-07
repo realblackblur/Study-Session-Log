@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import type { Session } from "../types";
+import SessionForm from "./SessionForm";
 import SessionList from "./SessionList";
 import Timer from "./Timer";
-import TimerControl from "./TimerControls";
+import TimerControls from "./TimerControls";
 
 function StudyTracker() {
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
@@ -62,23 +63,19 @@ function StudyTracker() {
   return (
     <>
       <Timer elapsedSeconds={elapsedSeconds} />
-      
-      <TimerControl
+
+      <TimerControls
         isRunning={isRunning}
         onToggle={() => setIsRunning((prev) => !prev)}
         onReset={handleReset}
       />
 
-      <div>
-        <input
-          type="text"
-          value={subjectName}
-          onChange={(e) => setSubjectName(e.target.value)}
-          placeholder="Subject Name"
-        />
-        <button onClick={handleSave}>Save</button>
-      </div>
-      {errorMessage !== "" && <p>{errorMessage}</p>}
+      <SessionForm
+        subjectName={subjectName}
+        errorMessage={errorMessage}
+        onSubjectChange={setSubjectName}
+        onSave={handleSave}
+      />
       <SessionList sessions={sessions} />
     </>
   );

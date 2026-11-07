@@ -61,7 +61,12 @@ function StudyTracker() {
   }
 
   return (
-    <>
+    <main className="app">
+      <header className="app-header">
+        <h1>Study Tracker</h1>
+        <p>Track your focus. Build better habits.</p>
+      </header>
+
       <Timer elapsedSeconds={elapsedSeconds} />
 
       <TimerControls
@@ -76,8 +81,9 @@ function StudyTracker() {
         onSubjectChange={setSubjectName}
         onSave={handleSave}
       />
+
       <SessionList sessions={sessions} />
-    </>
+    </main>
   );
 }
 

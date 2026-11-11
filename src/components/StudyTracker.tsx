@@ -1,64 +1,26 @@
-import { useEffect, useState } from "react";
-import type { Session } from "../types";
+import { useEffect, useReducer } from "react";
+import studyReducer, { initialState } from "../studyReducer";
 import SessionForm from "./SessionForm";
 import SessionList from "./SessionList";
 import Timer from "./Timer";
 import TimerControls from "./TimerControls";
 
 function StudyTracker() {
-  const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
-  const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [subjectName, setSubjectName] = useState<string>("");
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [state, dispatch] = useReducer(studyReducer, initialState);
 
   useEffect(() => {
-    if (!isRunning) {
+    if (!state.isRunning) {
       return;
     }
 
     const interval = setInterval(() => {
-      setElapsedSeconds((prev) => prev + 1);
+      dispatch({ type: "timer_tick" });
     }, 1000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [isRunning]);
-
-  function handleReset() {
-    setElapsedSeconds(0);
-    setIsRunning(false);
-    setErrorMessage("");
-  }
-
-  function handleSave() {
-    setErrorMessage("");
-    setIsRunning(false);
-
-    if (subjectName.trim() === "" && elapsedSeconds === 0) {
-      setErrorMessage("Enter a subject name & Start the timer before saving");
-      return;
-    }
-    if (subjectName.trim() === "") {
-      setErrorMessage("Enter a subject name");
-      return;
-    }
-    if (elapsedSeconds === 0) {
-      setErrorMessage("Start the timer before saving");
-      return;
-    }
-    const newSession: Session = {
-      id: Date.now(),
-      subject: subjectName.trim(),
-      durationSeconds: elapsedSeconds,
-    };
-
-    setSessions((prev) => [...prev, newSession]);
-
-    setElapsedSeconds(0);
-    setSubjectName("");
-  }
+  }, [state.isRunning]);
 
   return (
     <main className="app">
@@ -67,22 +29,22 @@ function StudyTracker() {
         <p>Track your focus. Build better habits.</p>
       </header>
 
-      <Timer elapsedSeconds={elapsedSeconds} />
+      <Timer elapsedSeconds={state.elapsedSeconds} />
 
       <TimerControls
-        isRunning={isRunning}
-        onToggle={() => setIsRunning((prev) => !prev)}
-        onReset={handleReset}
+        isRunning={state.isRunning}
+        onToggle={() => dispatch({ type: "toggle_timer" })}
+        onReset={() => dispatch({ type: "reset_timer" })}
       />
 
       <SessionForm
-        subjectName={subjectName}
-        errorMessage={errorMessage}
-        onSubjectChange={setSubjectName}
-        onSave={handleSave}
+        subjectName={state.subjectName}
+        errorMessage={state.errorMessage}
+        onSubjectChange={(value) => dispatch({ type: "update_subject", value })}
+        onSave={() => dispatch({ type: "save_session", id: Date.now() })}
       />
 
-      <SessionList sessions={sessions} />
+      <SessionList sessions={state.sessions} />
     </main>
   );
 }

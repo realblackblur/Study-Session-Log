@@ -1,20 +1,34 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap");
 
 :root {
-  font-family: "DM Sans", sans-serif;
-  color: #edf2ff;
-  background: #080d19;
+  /* Precision Hardware Palette */
+  --bg-desk: #e3e1dc;
+  --chassis-top: #f7f6f2;
+  --chassis-bottom: #eceae4;
+  --chassis-border: #cfccc4;
+  --chassis-shadow: rgba(28, 27, 24, 0.14);
+
+  /* Recessed OLED Screen */
+  --screen-bg: #121315;
+  --screen-border: #27292d;
+  --screen-text: #f4f3ef;
+  --screen-glow: rgba(255, 77, 28, 0.16);
+
+  /* Inks & Accents */
+  --ink-primary: #181816;
+  --ink-secondary: #68665f;
+  --ink-tertiary: #96938a;
+  --accent-orange: #ff4d1c;
+  --accent-orange-dark: #d9380c;
+  --accent-olive: #235347;
+
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--ink-primary);
+  background: var(--bg-desk);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  --surface: rgba(17, 26, 47, 0.78);
-  --surface-border: rgba(154, 177, 226, 0.14);
-  --muted: #8f9bb5;
-  --accent: #8b7cff;
-  --accent-bright: #a99eff;
-  --cyan: #5de1df;
 }
 
 * {
@@ -29,45 +43,10 @@ body {
   display: grid;
   place-items: center;
   overflow-x: hidden;
-  background:
-    radial-gradient(
-      ellipse at 15% 12%,
-      rgba(83, 72, 190, 0.2),
-      transparent 36%
-    ),
-    radial-gradient(
-      ellipse at 88% 82%,
-      rgba(34, 178, 183, 0.13),
-      transparent 34%
-    ),
-    #080d19;
-}
-
-body::before,
-body::after {
-  position: fixed;
-  z-index: -1;
-  width: 360px;
-  height: 360px;
-  content: "";
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.22;
-  pointer-events: none;
-  animation: float-glow 12s ease-in-out infinite alternate;
-}
-
-body::before {
-  top: -150px;
-  left: -100px;
-  background: #6c5ce7;
-}
-
-body::after {
-  right: -130px;
-  bottom: -170px;
-  background: #16b8b2;
-  animation-delay: -5s;
+  /* Architectural drafting dot-grid */
+  background-color: var(--bg-desk);
+  background-image: radial-gradient(#c2bfb7 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 button,
@@ -85,324 +64,362 @@ button {
   justify-content: center;
 }
 
+/* Main Machined Chassis */
 .app {
   position: relative;
-  width: min(100%, 620px);
-  padding: 42px;
-  overflow: hidden;
-  border: 1px solid var(--surface-border);
-  border-radius: 28px;
-  background: linear-gradient(
-    145deg,
-    rgba(20, 30, 54, 0.94),
-    rgba(12, 19, 36, 0.94)
-  );
+  width: min(100%, 540px);
+  padding: 36px 36px 40px;
+  border: 1px solid var(--chassis-border);
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--chassis-top) 0%, var(--chassis-bottom) 100%);
   box-shadow:
-    0 30px 100px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  animation: card-enter 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    0 24px 48px -12px var(--chassis-shadow),
+    0 4px 12px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.04);
+  text-align: center;
+  animation: chassis-mount 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Top Hardware Status Bar / Engraving Line */
 .app::before {
-  position: absolute;
-  top: 0;
-  left: 12%;
-  width: 76%;
-  height: 1px;
   content: "";
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(169, 158, 255, 0.9),
-    transparent
-  );
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  right: 20px;
+  height: 4px;
+  background-image: radial-gradient(circle, #c8c5bc 1.5px, transparent 1.5px);
+  background-size: 100% 4px;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
 .app-header {
-  margin-bottom: 34px;
-  text-align: center;
+  margin-bottom: 26px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(24, 24, 22, 0.08);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .app-header h1 {
   margin: 0;
-  font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(2rem, 6vw, 2.7rem);
+  font-size: 1.25rem;
   font-weight: 700;
-  letter-spacing: -0.06em;
-  background: linear-gradient(100deg, #ffffff 15%, #b9b0ff 55%, #75e5df 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  letter-spacing: -0.025em;
+  color: var(--ink-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Live Hardware Indicator Dot */
+.app-header h1::after {
+  content: "CHRONO // 01";
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-secondary);
+  padding: 3px 8px;
+  border: 1px solid var(--chassis-border);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .app-header p {
-  margin: 9px 0 0;
-  color: var(--muted);
-  font-size: 0.95rem;
-  letter-spacing: 0.01em;
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 0.85rem;
+  letter-spacing: -0.005em;
 }
 
-/* Main timer display */
+/* Recessed OLED Timer Bezel */
 .app > h1 {
   position: relative;
-  width: fit-content;
-  margin: 0 auto 26px;
-  padding: 22px 34px;
-  border: 1px solid rgba(155, 144, 255, 0.2);
-  border-radius: 20px;
-  background: linear-gradient(
-    135deg,
-    rgba(112, 94, 221, 0.16),
-    rgba(50, 180, 183, 0.08)
-  );
+  width: 100%;
+  margin: 0 0 22px;
+  padding: 28px 24px;
+  border: 2px solid #222326;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 45%),
+    var(--screen-bg);
   box-shadow:
-    0 12px 45px rgba(92, 75, 190, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  color: #f5f4ff;
-  font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(2.8rem, 10vw, 4.2rem);
+    inset 0 4px 14px rgba(0, 0, 0, 0.85),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.9);
+  color: var(--screen-text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: clamp(2.6rem, 9vw, 3.85rem);
   font-variant-numeric: tabular-nums;
   font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: 0.045em;
-  text-shadow: 0 0 28px rgba(169, 158, 255, 0.22);
-  animation: timer-pulse 4s ease-in-out infinite;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 24px var(--screen-glow);
+  user-select: none;
 }
 
-/* Start / pause and reset controls */
+/* Micro-ticks along top of OLED screen */
+.app > h1::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  right: 16px;
+  height: 4px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.16) 0px,
+    rgba(255, 255, 255, 0.16) 1px,
+    transparent 1px,
+    transparent 12px
+  );
+  pointer-events: none;
+}
+
+/* Tactile Mechanical Control Switches (Start / Reset) */
 .app > button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 116px;
-  margin: 0 5px 30px;
-  padding: 12px 22px;
-  border: 1px solid rgba(169, 158, 255, 0.35);
-  border-radius: 12px;
-  background: linear-gradient(135deg, #8878f5, #6858d8);
-  box-shadow: 0 7px 22px rgba(105, 88, 216, 0.22);
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 700;
+  width: calc(50% - 6px);
+  margin: 0 0 26px;
+  padding: 14px 20px;
+  border: 1px solid #c93208;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ff5b2e 0%, var(--accent-orange) 100%);
+  box-shadow:
+    0 3px 0 var(--accent-orange-dark),
+    0 6px 14px rgba(217, 56, 12, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   cursor: pointer;
   transition:
-    transform 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.app > button + button {
-  border-color: rgba(148, 164, 197, 0.2);
-  background: rgba(127, 145, 181, 0.1);
-  box-shadow: none;
-  color: #c5cee2;
-}
-
-/* Center both buttons */
-.app > button:nth-of-type(1),
-.app > button:nth-of-type(2) {
-  position: relative;
+    transform 90ms ease,
+    box-shadow 90ms ease,
+    filter 150ms ease;
 }
 
 .app > button:nth-of-type(1) {
-  margin-left: 0;
+  margin-right: 12px;
 }
 
-.app {
-  text-align: center;
-}
-
+/* Secondary Hardware Key (Reset) */
 .app > button + button {
-  border-color: rgba(148, 164, 197, 0.2);
-  background: rgba(127, 145, 181, 0.1);
-  box-shadow: none;
-  color: #c5cee2;
+  border-color: #c2bfb6;
+  background: linear-gradient(180deg, #ffffff 0%, #eae8e1 100%);
+  box-shadow:
+    0 3px 0 #bdb9af,
+    0 5px 10px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 #ffffff;
+  color: var(--ink-primary);
 }
 
 .app > button:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
-  box-shadow: 0 11px 28px rgba(105, 88, 216, 0.3);
+  filter: brightness(1.03);
 }
 
 .app > button:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 var(--accent-orange-dark),
+    0 2px 5px rgba(217, 56, 12, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.app > button + button:active {
+  box-shadow:
+    0 1px 0 #bdb9af,
+    0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .app > button:focus-visible,
 .app input:focus-visible {
-  outline: 3px solid rgba(93, 225, 223, 0.65);
+  outline: 2px solid var(--accent-orange);
   outline-offset: 3px;
 }
 
-/* Subject input and save action */
+/* Subject Input & Commit Slot */
 .app > div {
   display: flex;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .app input {
   width: 100%;
   min-width: 0;
-  padding: 14px 16px;
-  border: 1px solid rgba(154, 177, 226, 0.18);
-  border-radius: 12px;
-  background: rgba(5, 10, 22, 0.48);
-  color: #f1f4ff;
+  padding: 13px 15px;
+  border: 1px solid #c5c2b9;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow:
+    inset 0 2px 4px rgba(24, 24, 22, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.8);
+  color: var(--ink-primary);
+  font-size: 0.92rem;
   transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease,
-    background 180ms ease;
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .app input::placeholder {
-  color: #74819d;
+  color: var(--ink-tertiary);
 }
 
 .app input:focus {
-  border-color: rgba(139, 124, 255, 0.8);
+  border-color: var(--ink-primary);
   outline: none;
-  background: rgba(5, 10, 22, 0.72);
-  box-shadow: 0 0 0 4px rgba(139, 124, 255, 0.12);
+  box-shadow:
+    inset 0 2px 4px rgba(24, 24, 22, 0.04),
+    0 0 0 3px rgba(24, 24, 22, 0.08);
 }
 
 .app > div button {
   flex-shrink: 0;
-  padding: 0 22px;
-  border: 1px solid rgba(93, 225, 223, 0.25);
-  border-radius: 12px;
-  background: linear-gradient(135deg, #38bdb8, #218f9d);
-  box-shadow: 0 7px 20px rgba(34, 169, 174, 0.16);
-  color: #061b24;
-  font-weight: 700;
+  padding: 0 20px;
+  border: 1px solid #141413;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #2d2d2a 0%, #181816 100%);
+  box-shadow:
+    0 3px 0 #000000,
+    0 4px 10px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: #f7f6f2;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   cursor: pointer;
   transition:
-    transform 180ms ease,
-    filter 180ms ease,
-    box-shadow 180ms ease;
+    transform 90ms ease,
+    box-shadow 90ms ease,
+    background 150ms ease;
 }
 
 .app > div button:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.08);
-  box-shadow: 0 10px 25px rgba(34, 169, 174, 0.25);
+  background: linear-gradient(180deg, #3a3a36 0%, #20201d 100%);
 }
 
 .app > div button:active {
-  transform: scale(0.98);
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #000000;
 }
 
+/* Validation / Warning Readout */
 .app > p {
-  margin: 8px 2px 22px;
-  color: #ff9caa;
-  font-size: 0.86rem;
-  animation: message-in 220ms ease both;
+  margin: 10px 0 18px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent-orange);
+  border-radius: 0 6px 6px 0;
+  background: rgba(255, 77, 28, 0.08);
+  color: #b82d06;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-align: left;
+  animation: message-in 180ms ease both;
 }
 
-/* Saved sessions */
+/* Session Log Ledger */
 .app > h3 {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 30px 0 14px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(154, 177, 226, 0.12);
-  color: #e8edff;
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 1.08rem;
+  justify-content: space-between;
+  margin: 28px 0 12px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(24, 24, 22, 0.1);
+  color: var(--ink-secondary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
   font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
-.app > h3::before {
-  width: 8px;
-  height: 8px;
-  border-radius: 3px;
-  background: var(--cyan);
-  box-shadow: 0 0 14px rgba(93, 225, 223, 0.6);
-  content: "";
-  transform: rotate(45deg);
+.app > h3::after {
+  content: "LOG // REC";
+  color: var(--ink-tertiary);
+  font-size: 0.7rem;
 }
 
 .app > h3 + p {
   margin: 0;
-  padding: 22px 16px;
-  border: 1px dashed rgba(154, 177, 226, 0.2);
-  border-radius: 13px;
-  color: var(--muted);
-  font-size: 0.9rem;
+  padding: 20px 16px;
+  border: 1px dashed #c4c1b8;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--ink-tertiary);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
   text-align: center;
 }
 
 .app ul {
   display: grid;
-  gap: 9px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
+  counter-reset: log-index;
 }
 
 .app li {
+  counter-increment: log-index;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 14px 16px;
-  border: 1px solid rgba(154, 177, 226, 0.12);
-  border-radius: 12px;
-  background: rgba(116, 133, 172, 0.07);
-  color: #dce4f8;
-  font-size: 0.92rem;
-  animation: session-in 350ms ease both;
+  gap: 14px;
+  padding: 12px 14px 12px 42px;
+  border: 1px solid #d5d2c9;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  color: var(--ink-primary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-align: left;
+  animation: session-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
   transition:
-    border-color 180ms ease,
-    background 180ms ease,
-    transform 180ms ease;
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+/* Auto-numbered Tape Index Badge */
+.app li::before {
+  content: counter(log-index, decimal-leading-zero);
+  position: absolute;
+  left: 12px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-orange);
+  background: rgba(255, 77, 28, 0.1);
+  padding: 2px 5px;
+  border-radius: 4px;
 }
 
 .app li:hover {
-  transform: translateX(3px);
-  border-color: rgba(93, 225, 223, 0.25);
-  background: rgba(116, 133, 172, 0.12);
+  border-color: #9e9b91;
+  transform: translateX(2px);
 }
 
-@keyframes card-enter {
+@keyframes chassis-mount {
   from {
     opacity: 0;
-    transform: translateY(18px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes float-glow {
-  from {
-    transform: translate3d(0, 0, 0) scale(0.9);
-  }
-  to {
-    transform: translate3d(35px, 45px, 0) scale(1.15);
-  }
-}
-
-@keyframes timer-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 12px 45px rgba(92, 75, 190, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  }
-  50% {
-    box-shadow:
-      0 12px 55px rgba(92, 75, 190, 0.22),
-      inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  }
-}
-
-@keyframes message-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -410,10 +427,21 @@ button {
   }
 }
 
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes session-in {
   from {
     opacity: 0;
-    transform: translateY(7px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -423,34 +451,29 @@ button {
 
 @media (max-width: 520px) {
   body {
-    padding: 22px 13px;
+    padding: 20px 12px;
   }
 
   .app {
-    padding: 30px 20px;
-    border-radius: 22px;
-  }
-
-  .app-header {
-    margin-bottom: 28px;
+    padding: 28px 20px 30px;
+    border-radius: 14px;
   }
 
   .app > h1 {
-    padding: 19px 20px;
-    border-radius: 16px;
+    padding: 22px 16px;
   }
 
   .app > button {
-    min-width: 0;
-    padding: 11px 19px;
+    padding: 13px 12px;
+    font-size: 0.78rem;
   }
 
   .app > div {
-    gap: 8px;
+    flex-direction: column;
   }
 
   .app > div button {
-    padding: 0 16px;
+    padding: 13px 16px;
   }
 }
 

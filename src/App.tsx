@@ -1,9 +1,13 @@
+import FluidCursor from "./components/FluidCursor";
 import StudyTracker from "./components/StudyTracker";
 
 function App() {
   return (
     <>
-      <StudyTracker />
+      <FluidCursor />
+      <div className="app">
+        <StudyTracker />
+      </div>
     </>
   );
 }

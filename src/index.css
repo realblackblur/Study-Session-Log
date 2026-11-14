@@ -1,28 +1,28 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap");
 
 :root {
-  /* Precision Hardware Palette */
   --bg-desk: #e3e1dc;
   --chassis-top: #f7f6f2;
   --chassis-bottom: #eceae4;
   --chassis-border: #cfccc4;
   --chassis-shadow: rgba(28, 27, 24, 0.14);
 
-  /* Recessed OLED Screen */
   --screen-bg: #121315;
   --screen-border: #27292d;
   --screen-text: #f4f3ef;
   --screen-glow: rgba(255, 77, 28, 0.16);
 
-  /* Inks & Accents */
   --ink-primary: #181816;
   --ink-secondary: #68665f;
   --ink-tertiary: #96938a;
   --accent-orange: #ff4d1c;
   --accent-orange-dark: #d9380c;
-  --accent-olive: #235347;
 
-  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Plus Jakarta Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   color: var(--ink-primary);
   background: var(--bg-desk);
   font-synthesis: none;
@@ -35,6 +35,20 @@
   box-sizing: border-box;
 }
 
+/* Hide native OS cursor on precision pointer devices */
+@media (pointer: fine) {
+  html,
+  body,
+  button,
+  input,
+  a,
+  li,
+  .app,
+  .app * {
+    cursor: none !important;
+  }
+}
+
 body {
   min-width: 320px;
   min-height: 100vh;
@@ -43,7 +57,6 @@ body {
   display: grid;
   place-items: center;
   overflow-x: hidden;
-  /* Architectural drafting dot-grid */
   background-color: var(--bg-desk);
   background-image: radial-gradient(#c2bfb7 1px, transparent 1px);
   background-size: 20px 20px;
@@ -64,14 +77,195 @@ button {
   justify-content: center;
 }
 
-/* Main Machined Chassis */
+/* =========================================================
+   FLUID HARDWARE CURSOR SYSTEM (GPU ACCELERATED)
+   ========================================================= */
+.cursor-core,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 99999;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.cursor-visible .cursor-core,
+.cursor-visible .cursor-ring {
+  opacity: 1;
+}
+
+/* 1. Zero-Lag Center Calibration Pip */
+.cursor-core {
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  box-shadow: 0 0 8px rgba(255, 77, 28, 0.55);
+  transition:
+    width 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    margin 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 180ms ease,
+    background-color 180ms ease;
+}
+
+/* 2. Spring-Damped Trailing Optical Reticle */
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
+  border: 1.5px solid rgba(24, 24, 22, 0.42);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition:
+    width 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+/* Crosshair ticks on the trailing ring */
+.cursor-ring::before,
+.cursor-ring::after {
+  content: "";
+  position: absolute;
+  background: var(--accent-orange);
+  opacity: 0;
+  transition:
+    opacity 200ms ease,
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cursor-ring::before {
+  width: 100%;
+  height: 1px;
+  transform: scaleX(0.2);
+}
+
+.cursor-ring::after {
+  width: 1px;
+  height: 100%;
+  transform: scaleY(0.2);
+}
+
+/* STATE: Hovering Buttons / Switches -> Morphs into Orange Target Bracket */
+body[data-cursor="action"] .cursor-ring {
+  width: 48px;
+  height: 48px;
+  margin-left: -24px;
+  margin-top: -24px;
+  border-radius: 10px;
+  border-color: var(--accent-orange);
+  background: rgba(255, 77, 28, 0.08);
+  box-shadow: 0 0 18px rgba(255, 77, 28, 0.18);
+}
+
+body[data-cursor="action"] .cursor-core {
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  margin-top: -2.5px;
+  background: #ffffff;
+}
+
+/* STATE: Hovering Dark OLED Timer -> Inverted Optical Loupe */
+body[data-cursor="oled"] .cursor-ring {
+  width: 56px;
+  height: 56px;
+  margin-left: -28px;
+  margin-top: -28px;
+  border-color: rgba(244, 243, 239, 0.65);
+  border-style: dashed;
+  background: rgba(255, 255, 255, 0.04);
+  animation: reticle-spin 9s linear infinite;
+}
+
+body[data-cursor="oled"] .cursor-ring::before,
+body[data-cursor="oled"] .cursor-ring::after {
+  opacity: 0.7;
+  transform: scale(1);
+}
+
+/* STATE: Hovering Input -> Precision Typewriter Caliper */
+body[data-cursor="text"] .cursor-ring {
+  width: 14px;
+  height: 28px;
+  margin-left: -7px;
+  margin-top: -14px;
+  border-radius: 3px;
+  border-color: var(--ink-primary);
+  background: rgba(24, 24, 22, 0.04);
+}
+
+body[data-cursor="text"] .cursor-core {
+  width: 2px;
+  height: 16px;
+  margin-left: -1px;
+  margin-top: -8px;
+  border-radius: 1px;
+}
+
+/* STATE: Hovering Log Items -> Ledger Scan Pill */
+body[data-cursor="row"] .cursor-ring {
+  width: 38px;
+  height: 24px;
+  margin-left: -19px;
+  margin-top: -12px;
+  border-radius: 6px;
+  border-color: var(--accent-orange);
+}
+
+/* STATE: Mouse Down Click Recoil */
+body[data-cursor-down="true"] .cursor-ring {
+  transform: scale(0.76) !important;
+  border-width: 2.5px;
+  background: rgba(255, 77, 28, 0.18);
+}
+
+body[data-cursor-down="true"] .cursor-core {
+  transform: scale(1.4) !important;
+}
+
+@keyframes reticle-spin {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (pointer: coarse) {
+  .cursor-core,
+  .cursor-ring {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   MACHINED HARDWARE CHASSIS UI
+   ========================================================= */
 .app {
   position: relative;
   width: min(100%, 540px);
   padding: 36px 36px 40px;
   border: 1px solid var(--chassis-border);
   border-radius: 18px;
-  background: linear-gradient(180deg, var(--chassis-top) 0%, var(--chassis-bottom) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--chassis-top) 0%,
+    var(--chassis-bottom) 100%
+  );
   box-shadow:
     0 24px 48px -12px var(--chassis-shadow),
     0 4px 12px rgba(0, 0, 0, 0.05),
@@ -81,7 +275,6 @@ button {
   animation: chassis-mount 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Top Hardware Status Bar / Engraving Line */
 .app::before {
   content: "";
   position: absolute;
@@ -117,7 +310,6 @@ button {
   justify-content: space-between;
 }
 
-/* Live Hardware Indicator Dot */
 .app-header h1::after {
   content: "CHRONO // 01";
   font-family: "IBM Plex Mono", monospace;
@@ -135,7 +327,6 @@ button {
   margin: 0;
   color: var(--ink-secondary);
   font-size: 0.85rem;
-  letter-spacing: -0.005em;
 }
 
 /* Recessed OLED Timer Bezel */
@@ -164,7 +355,6 @@ button {
   user-select: none;
 }
 
-/* Micro-ticks along top of OLED screen */
 .app > h1::before {
   content: "";
   position: absolute;
@@ -182,7 +372,7 @@ button {
   pointer-events: none;
 }
 
-/* Tactile Mechanical Control Switches (Start / Reset) */
+/* Tactile Mechanical Control Switches */
 .app > button {
   display: inline-flex;
   align-items: center;
@@ -203,10 +393,9 @@ button {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  cursor: pointer;
   transition:
-    transform 90ms ease,
-    box-shadow 90ms ease,
+    transform 110ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 110ms ease,
     filter 150ms ease;
 }
 
@@ -214,7 +403,6 @@ button {
   margin-right: 12px;
 }
 
-/* Secondary Hardware Key (Reset) */
 .app > button + button {
   border-color: #c2bfb6;
   background: linear-gradient(180deg, #ffffff 0%, #eae8e1 100%);
@@ -233,20 +421,13 @@ button {
   transform: translateY(2px);
   box-shadow:
     0 1px 0 var(--accent-orange-dark),
-    0 2px 5px rgba(217, 56, 12, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 2px 5px rgba(217, 56, 12, 0.2);
 }
 
 .app > button + button:active {
   box-shadow:
     0 1px 0 #bdb9af,
     0 2px 4px rgba(0, 0, 0, 0.06);
-}
-
-.app > button:focus-visible,
-.app input:focus-visible {
-  outline: 2px solid var(--accent-orange);
-  outline-offset: 3px;
 }
 
 /* Subject Input & Commit Slot */
@@ -301,10 +482,9 @@ button {
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  cursor: pointer;
   transition:
-    transform 90ms ease,
-    box-shadow 90ms ease,
+    transform 110ms ease,
+    box-shadow 110ms ease,
     background 150ms ease;
 }
 
@@ -394,10 +574,9 @@ button {
   animation: session-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
   transition:
     border-color 150ms ease,
-    transform 150ms ease;
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Auto-numbered Tape Index Badge */
 .app li::before {
   content: counter(log-index, decimal-leading-zero);
   position: absolute;
@@ -413,7 +592,7 @@ button {
 
 .app li:hover {
   border-color: #9e9b91;
-  transform: translateX(2px);
+  transform: translateX(3px);
 }
 
 @keyframes chassis-mount {
